@@ -134,6 +134,57 @@ body {
     display: none !important;
 }
 
+/* Mobile Navigation Toggle */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.hamburger {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: var(--color-text);
+    position: relative;
+    transition: var(--transition);
+}
+
+.hamburger::before,
+.hamburger::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 3px;
+    background: var(--color-text);
+    transition: var(--transition);
+}
+
+.hamburger::before {
+    top: -8px;
+}
+
+.hamburger::after {
+    top: 8px;
+}
+
+.nav-toggle.active .hamburger {
+    background: transparent;
+}
+
+.nav-toggle.active .hamburger::before {
+    transform: rotate(45deg);
+    top: 0;
+}
+
+.nav-toggle.active .hamburger::after {
+    transform: rotate(-45deg);
+    top: 0;
+}
+
 /* ================================
    HERO SECTION
    ================================ */
@@ -475,20 +526,39 @@ body {
    ================================ */
 @media (max-width: 768px) {
     .navbar .container {
-        flex-direction: column;
-        height: auto;
-        padding: 1rem 20px;
+        flex-direction: row;
+        height: 70px;
+        padding: 0 20px;
+    }
+    
+    .nav-toggle {
+        display: block;
     }
     
     .nav-links {
-        margin-top: 1rem;
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 15, 0.98);
+        flex-direction: column;
+        padding: 2rem;
         gap: 1.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+        border-bottom: 1px solid var(--color-border);
+    }
+    
+    .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
     }
     
     .hero {
-        padding-top: 120px;
+        padding-top: 70px;
     }
     
     .hero-title {

@@ -14,6 +14,9 @@
     <nav class="navbar">
         <div class="container">
             <div class="logo">GTA<span class="accent">DEV</span></div>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span class="hamburger"></span>
+            </button>
             <ul class="nav-links">
                 <li><a href="#features">Fonctionnalités</a></li>
                 <li><a href="#about">À propos</a></li>
@@ -143,7 +146,19 @@
                         block: 'start'
                     });
                 }
+                // Close mobile menu on link click
+                document.querySelector('.nav-links').classList.remove('active');
+                document.querySelector('.nav-toggle').classList.remove('active');
             });
+        });
+
+        // Mobile navigation toggle
+        const navToggle = document.querySelector('.nav-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        navToggle.addEventListener('click', () => {
+            navToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
         });
     </script>
 </body>
