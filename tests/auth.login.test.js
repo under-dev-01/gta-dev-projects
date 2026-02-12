@@ -172,5 +172,32 @@ describe('Auth Controller - Login', () => {
       expect(response.user).toBeDefined();
       expect(response.user.password).toBeUndefined();
     });
+
+    test('devrait retourner 500 en cas d\'erreur serveur', async () => {
+      // Simuler une erreur en modifiant temporairement users.find
+      const originalFind = Array.prototype.find;
+      Array.prototype.find = jest.fn(() => {
+        throw new Error('Database error');
+      });
+
+      mockReq = {
+        body: {
+          email: 'test@example.com',
+          password: 'password123'
+        }
+      };
+
+      await login(mockReq, mockRes);
+
+      // Restaurer find
+      Array.prototype.find = originalFind;
+
+      expect(statusMock).toHaveBeenCalledWith(500);
+      expect(jsonMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Erreur serveur'
+        })
+      );
+    });
   });
 });

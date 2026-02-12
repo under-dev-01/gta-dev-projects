@@ -151,6 +151,31 @@ describe('JWT Middleware', () => {
         })
       );
     });
+
+    test('devrait retourner 500 en cas d\'erreur inattendue lors de la vérification', () => {
+      // Mock jwt.verify pour lever une erreur inattendue (ni Expired ni JsonWebTokenError)
+      const jwt = require('jsonwebtoken');
+      const originalVerify = jwt.verify;
+      jwt.verify = jest.fn(() => {
+        const error = new Error('Unexpected error');
+        error.name = 'SomeOtherError';
+        throw error;
+      });
+
+      mockReq.headers.authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjF9.8nYxK2gGvM4zL6vT8bF2cJ4aQ6sD8fH2';
+
+      verifyToken(mockReq, mockRes, nextMock);
+
+      // Restaurer
+      jwt.verify = originalVerify;
+
+      expect(mockRes.status).toHaveBeenCalledWith(500);
+      expect(mockRes.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Erreur de vérification du token'
+        })
+      );
+    });
   });
 
   describe('optionalAuth', () => {

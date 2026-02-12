@@ -276,5 +276,34 @@ describe('Auth Controller - Register', () => {
       expect(uniqueIds.length).toBe(3);
       expect(createdIds).toEqual([1, 2, 3]);
     });
+
+    test('devrait retourner 500 en cas d\'erreur serveur', async () => {
+      // Simuler une erreur lors du hashage
+      const bcrypt = require('bcryptjs');
+      const originalHash = bcrypt.hash;
+      bcrypt.hash = jest.fn(() => {
+        throw new Error('Hashing error');
+      });
+
+      mockReq = {
+        body: {
+          email: 'user@example.com',
+          password: 'password123',
+          username: 'newuser'
+        }
+      };
+
+      await register(mockReq, mockRes);
+
+      // Restaurer
+      bcrypt.hash = originalHash;
+
+      expect(statusMock).toHaveBeenCalledWith(500);
+      expect(jsonMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Erreur serveur'
+        })
+      );
+    });
   });
 });
